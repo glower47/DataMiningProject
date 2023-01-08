@@ -422,6 +422,81 @@ forecasts for the next four months.</h4>
 mymodel &lt;- ets(pigs$Count)
 myforecast &lt;- forecast(mymodel, level = 95, fan = TRUE, h = 4)
 autoplot(myforecast)</code></pre>
+<p><br></p>
+</div>
+</div>
+<div id="exercise-2-chapter-8.8" class="section level1">
+<h1>Exercise 2, Chapter 8.8</h1>
+<div id="write-your-own-function-to-implement-simple-exponential-smoothing.-the-function-should-take-arguments-y-the-time-series-alpha-the-smoothing-parameter-α-and-level-the-initial-level-ℓ0.-it-should-return-the-forecast-of-the-next-observation-in-the-series.-does-it-give-the-same-forecast-as-ets" class="section level4">
+<h4>Write your own function to implement simple exponential smoothing.
+The function should take arguments y (the time series), alpha (the
+smoothing parameter α) and level (the initial level ℓ0). It should
+return the forecast of the next observation in the series. Does it give
+the same forecast as ETS()?</h4>
+<p><br></p>
+<pre><code>simple_exponential_smoothing &lt;- function(y, alpha, level) {
+  # Initialize empty vector to store smoothed values
+  smoothed &lt;- numeric(length(y))
+  
+  # Set initial value of smoothed to initial level
+  smoothed[1] &lt;- level
+  
+  # Loop through time series and calculate smoothed values
+  for (i in 2:length(y)) {
+    smoothed[i] &lt;- alpha * y[i] + (1 - alpha) * smoothed[i-1]
+  }
+  
+  # Return forecast of next observation in the series
+  return(alpha * y[length(y)] + (1 - alpha) * smoothed[length(y)])
+}
+
+y &lt;- c(1, 2, 3, 4, 5, 6)
+alpha &lt;- 0.5
+level &lt;- 1
+
+my_forecast &lt;- simple_exponential_smoothing(y, alpha, level)
+print(my_forecast)</code></pre>
+<p><br></p>
+</div>
+</div>
+<div id="exercise-3-chapter-8.8" class="section level1">
+<h1>Exercise 3, Chapter 8.8</h1>
+<div id="modify-your-function-from-the-previous-exercise-to-return-the-sum-of-squared-errors-rather-than-the-forecast-of-the-next-observation.-then-use-the-optim-function-to-find-the-optimal-values-of-α-and-ℓ0.-do-you-get-the-same-values-as-the-ets-function" class="section level4">
+<h4>Modify your function from the previous exercise to return the sum of
+squared errors rather than the forecast of the next observation. Then
+use the optim() function to find the optimal values of α and ℓ0. Do you
+get the same values as the ETS() function?</h4>
+<p><br></p>
+<pre><code>simple_exponential_smoothing_modified &lt;- function(y, alpha, level) {
+  # Initialize empty vector to store smoothed values
+  smoothed &lt;- numeric(length(y))
+  
+  # Set initial value of smoothed to initial level
+  smoothed[1] &lt;- level
+  
+  # Loop through time series and calculate smoothed values
+  for (i in 2:length(y)) {
+    smoothed[i] &lt;- alpha * y[i] + (1 - alpha) * smoothed[i-1]
+  }
+  
+  # Initialize variable to store SSE
+  sse &lt;- 0
+  
+  # Loop through time series and calculate SSE
+  for (i in 1:length(y)) {
+    sse &lt;- sse + (y[i] - smoothed[i])^2
+  }
+  
+  # Return SSE
+  return(sse)
+}
+
+y &lt;- c(1, 2, 3, 4, 5, 6)
+alpha &lt;- 0.5
+level &lt;- 1
+
+my_forecast &lt;- simple_exponential_smoothing_modified(y, alpha, level)
+print(my_forecast)</code></pre>
 </div>
 </div>
 
