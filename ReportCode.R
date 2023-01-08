@@ -1,6 +1,5 @@
 install.packages("tsibbledata")
 install.packages("tidyverse")
-install.packages("mgcv")
 install.packages('forecast', dependencies = TRUE)
 
 library("tsibbledata")
@@ -10,7 +9,8 @@ library("ggplot2")
 
 #7.10
 #6
-afg_people <- data.frame(Year = subset(global_economy, Code == "AFG")$Year, Population = subset(global_economy, Code == "AFG")$Population)
+afg_people <- data.frame(Year = subset(global_economy, Code == "AFG")$Year, 
+                         Population = subset(global_economy, Code == "AFG")$Population)
 
 #a)
 ggplot(afg_people, aes(x = Year, y = Population)) +
@@ -49,3 +49,58 @@ mymodel <- ets(pigs$Count)
 myforecast <- forecast(mymodel, level = 95, fan = TRUE, h = 4)
 autoplot(myforecast)
 
+#2
+simple_exponential_smoothing <- function(y, alpha, level) {
+  # Initialize empty vector to store smoothed values
+  smoothed <- numeric(length(y))
+  
+  # Set initial value of smoothed to initial level
+  smoothed[1] <- level
+  
+  # Loop through time series and calculate smoothed values
+  for (i in 2:length(y)) {
+    smoothed[i] <- alpha * y[i] + (1 - alpha) * smoothed[i-1]
+  }
+  
+  # Return forecast of next observation in the series
+  return(alpha * y[length(y)] + (1 - alpha) * smoothed[length(y)])
+}
+
+y <- c(1, 2, 3, 4, 5, 6)
+alpha <- 0.5
+level <- 1
+
+my_forecast <- simple_exponential_smoothing(y, alpha, level)
+print(my_forecast)
+
+#3
+simple_exponential_smoothing_modified <- function(y, alpha, level) {
+  # Initialize empty vector to store smoothed values
+  smoothed <- numeric(length(y))
+  
+  # Set initial value of smoothed to initial level
+  smoothed[1] <- level
+  
+  # Loop through time series and calculate smoothed values
+  for (i in 2:length(y)) {
+    smoothed[i] <- alpha * y[i] + (1 - alpha) * smoothed[i-1]
+  }
+  
+  # Initialize variable to store SSE
+  sse <- 0
+  
+  # Loop through time series and calculate SSE
+  for (i in 1:length(y)) {
+    sse <- sse + (y[i] - smoothed[i])^2
+  }
+  
+  # Return SSE
+  return(sse)
+}
+
+y <- c(1, 2, 3, 4, 5, 6)
+alpha <- 0.5
+level <- 1
+
+my_forecast <- simple_exponential_smoothing_modified(y, alpha, level)
+print(my_forecast)
