@@ -358,88 +358,71 @@ Smoothing</h1>
 </div>
 
 
-<div id="introduction" class="section level2">
-<h2>Introduction</h2>
-<p>Modelarea regresiei este un tip de model statistic utilizat pentru a
-prezice o variabilă de ieşire continuă pe baza uneia sau mai multor
-variabile predictor. Există mai multe tipuri de modele de regresie,
-inclusiv regresia liniară, regresia logistică şi regresia neliniară.</p>
-<p>În acest document, ne vom concentra pe regresia liniară, care este un
-tip de model de regresie care presupune o relaţie liniară între
-variabila predictor şi variabila de ieşire. De asemenea, vom discuta
-netezirea exponentială, care este o metodă pentru previzionarea seriilor
-de timp.</p>
+<div id="exercise-6-chapter-7.10" class="section level1">
+<h1>Exercise 6, Chapter 7.10</h1>
+<div id="the-annual-population-of-afghanistan-is-available-in-the-global_economy-data-set." class="section level4">
+<h4>The annual population of Afghanistan is available in the
+global_economy data set. <br></h4>
+<pre><code>afg_people &lt;- data.frame(Year = subset(global_economy, Code == &quot;AFG&quot;)$Year, Population = subset(global_economy, Code == &quot;AFG&quot;)$Population)</code></pre>
+<p><br></p>
 </div>
-<div id="linear-regression" class="section level2">
-<h2>Linear Regression</h2>
-<p>Regresia liniară este o metodă statistică utilizată pentru a modela
-relaţia dintre o variabilă predictor (cunoscută şi ca variabilă
-independentă) şi o variabilă de ieşire (cunoscută şi ca variabilă
-dependentă). Scopul regresiei liniare este de a găsi cea mai potrivită
-linie care descrie relaţia dintre variabila predictor şi variabila de
-ieşire.</p>
-<p>Pentru a ajusta un model de regresie liniar în R, putem utiliza
-funcţia lm(). Iată un exemplu de cum să ajustăm un model de regresie
-liniar în R:</p>
-<pre><code># load the ggplot2 and tidyverse packages
-library(ggplot2)
-library(tidyverse)
-
-# load the mtcars data set
-data(mtcars)
-
-# fit a linear regression model
-model &lt;- lm(mpg ~ wt, data = mtcars)
-
-# display the model summary
-summary(model)</code></pre>
-<p>Acest cod ajustează un model de regresie liniar care prezice
-kilometrajul unei maşini (mpg) pe baza greutăţii sale (wt) folosind
-funcţia lm() şi formula mpg ~ wt. Parametrul data specifică setul de
-date de utilizat, iar funcţia summary() este utilizată pentru a afişa un
-rezumat al modelului.</p>
-<p>Pentru a trasa datele şi linia ajustată din modelul de regresie
-liniar, putem folosi funcţiile ggplot() şi geom_line():</p>
-<pre><code># trasaţi datele şi linia ajustată
-data(mtcars)
-
-ggplot(mtcars, aes(x = 1, y = 1)) +
-  geom_point() +
-  geom_line(data = data.frame(x = mtcars$wt, y = predict(model)), color = &quot;red&quot;)
-</code></pre>
+<div id="a-plot-the-data-and-comment-on-its-features.-can-you-observe-the-effect-of-the-soviet-afghan-war" class="section level4">
+<h4>a) Plot the data and comment on its features. Can you observe the
+effect of the Soviet-Afghan war?</h4>
+<pre><code>ggplot(afg_people, aes(x = Year, y = Population)) +
+  geom_point()</code></pre>
+<p>During the Soviet-Afghan war, Afghanistan had a declining
+population.</p>
+<p><br></p>
 </div>
-<div id="exponential-smoothing" class="section level2">
-<h2>Exponential Smoothing</h2>
-<p>Netezirea exponentială este o metodă pentru previzionarea seriilor de
-date de timp care utilizează valorile anterioare pentru a prezice
-valorile viitoare. Există mai multe tipuri de netezire exponentială,
-inclusiv netezirea exponentială simplă, netezirea exponentială
-îmbunătăţită şi netezirea exponentială cu sezonalitate.</p>
-<p>Pentru a estima un model echivalent pentru netezirea exponentială
-simplă în R, putem utiliza funcţia ets(). Iată un exemplu de cum să
-facem acest lucru:</p>
-<pre><code>data(aus_livestock)
-
-df &lt;- aus_livestock %&gt;%
-  filter(State == &quot;Victoria&quot; &amp; Animal == &quot;Pigs&quot;)
-
-fit &lt;- ets(df$Count)
-
-print(fit$alpha)
-print(fit$l0)
-
-forecast &lt;- forecast(fit, level=95, h = 4)
-
-autoplot(forecast)
-</code></pre>
+<div id="b-fit-a-linear-trend-model-and-compare-this-to-a-piecewise-linear-trend-model-with-knots-at-1980-and-1989." class="section level4">
+<h4>b) Fit a linear trend model and compare this to a piecewise linear
+trend model with knots at 1980 and 1989.</h4>
+<pre><code>ggplot(afg_people, aes(x = Year, y = Population)) +
+  geom_point() + 
+  geom_line(aes(x = 1980)) +
+  geom_line(aes(x = 1989)) +
+  geom_smooth(method = &quot;lm&quot;) + # Fit a linear trend model
+  geom_smooth(method = &quot;gam&quot;) # Fit a piecewise linear trend model with knots at 1980 and 1989</code></pre>
+<p><br></p>
 </div>
-<div id="concluzie" class="section level2">
-<h2>Concluzie</h2>
-<p>În acest document, am discutat modelarea regresiei liniare şi
-netezirea exponentială, care sunt două metode importante pentru
-prezicerea variabilelor continue şi seriilor de date de timp. Utilizarea
-acestor metode poate ajuta la înţelegerea relaţiilor dintre variabile şi
-la luarea deciziilor informate în diverse domenii.</p>
+<div id="c-generate-forecasts-from-these-two-models-for-the-five-years-after-the-end-of-the-data-and-comment-on-the-results." class="section level4">
+<h4>c) Generate forecasts from these two models for the five years after
+the end of the data, and comment on the results.</h4>
+<pre><code># Fit a linear model to the data
+lm_model &lt;- lm(Population ~ Year, data = afg_people)
+
+# Generate the forecasted values for the next 5 years
+forecast &lt;- data.frame(Year = seq(max(afg_people$Year) + 1, max(afg_people$Year) + 5))
+forecast$Population &lt;- predict(lm_model, newdata = forecast)
+
+# Combine the original data and the forecasted values
+final_forecast &lt;- rbind(afg_people, forecast)
+
+# Plot the forecasted values using geom_line()
+ggplot(final_forecast, aes(x = Year, y = Population)) +
+  geom_point() + 
+  geom_smooth(method = &quot;lm&quot;)</code></pre>
+<p><br></p>
+</div>
+</div>
+<div id="exercise-1-chapter-8.8" class="section level1">
+<h1>Exercise 1, Chapter 8.8</h1>
+<div id="consider-the-the-number-of-pigs-slaughtered-in-victoria-available-in-the-aus_livestock-dataset." class="section level4">
+<h4>Consider the the number of pigs slaughtered in Victoria, available
+in the aus_livestock dataset.</h4>
+<p><br></p>
+</div>
+<div id="ause-the-ets-function-to-estimate-the-equivalent-model-for-simple-exponential-smoothing.-find-the-optimal-values-of-α-and-ℓ0-and-generate-forecasts-for-the-next-four-months." class="section level4">
+<h4>a)Use the ETS() function to estimate the equivalent model for simple
+exponential smoothing. Find the optimal values of α and ℓ0, and generate
+forecasts for the next four months.</h4>
+<pre><code>pigs &lt;- subset(aus_livestock, Animal == &quot;Pigs&quot; &amp; State == &quot;Victoria&quot;)
+
+mymodel &lt;- ets(pigs$Count)
+myforecast &lt;- forecast(mymodel, level = 95, fan = TRUE, h = 4)
+autoplot(myforecast)</code></pre>
+</div>
 </div>
 
 
