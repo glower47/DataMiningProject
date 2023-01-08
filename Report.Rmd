@@ -1,5 +1,5 @@
 ---
-title: "Report - Time series regression model and Exponential smoothing"
+title: "Report"
 author: "Andrei Daniel Trache, Alexandru Vergiliu Olaru"
 date: "`r Sys.Date()`"
 output: html_document
